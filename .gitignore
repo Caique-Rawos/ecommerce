@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### JWT KEY ###
+app.key
+app.key.pub

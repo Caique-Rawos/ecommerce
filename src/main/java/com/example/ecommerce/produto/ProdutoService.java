@@ -4,25 +4,19 @@ import com.example.ecommerce.produto.dto.ProdutoEntityDto;
 import com.example.ecommerce.produto.dto.ReadProdutoDto;
 import com.example.ecommerce.shared.PaginatedResponse;
 import com.example.ecommerce.shared.exception.MessageException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
-    @Autowired
-    public ProdutoService(ProdutoRepository produtoRepository){
-        this.produtoRepository = produtoRepository;
-    }
 
     public PaginatedResponse<ReadProdutoDto> findPaginated(int page, int size, String sortBy, String sortDir) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortBy);

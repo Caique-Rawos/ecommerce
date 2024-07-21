@@ -1,7 +1,5 @@
 package com.example.ecommerce.produto.dto;
 
-import lombok.Data;
-
 import java.math.BigDecimal;
 
 public record ProdutoEntityDto(

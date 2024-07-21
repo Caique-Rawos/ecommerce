@@ -5,14 +5,14 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "permission")
+@Table(name = "permissions")
 public class PermissionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String description;
+    private String descricao;
 
     public enum permissions {
         ADMIN(1L),
