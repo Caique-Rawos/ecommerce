@@ -1,5 +1,6 @@
 package com.example.ecommerce.produto;
 
+import com.example.ecommerce.produto.categoria.CategoriaEntity;
 import com.example.ecommerce.produto.dto.ProdutoEntityDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,12 +27,22 @@ public class ProdutoEntity implements Serializable {
 
     private String tipoEmbalagem;
 
+    private BigDecimal estoque;
+
     private String descricao;
+
+    private String descricaoDetalhada;
+
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private CategoriaEntity categoria;
 
     public ProdutoEntity(ProdutoEntityDto dto) {
         this.codigoBarras = dto.codigoBarras();
         this.descricao = dto.descricao();
+        this.descricaoDetalhada = dto.descricaoDetalhada();
         this.precoVenda = dto.precoVenda();
+        this.estoque = dto.estoque();
         this.tipoEmbalagem = dto.tipoEmbalagem();
     }
 }

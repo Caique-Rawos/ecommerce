@@ -1,11 +1,11 @@
-package com.example.ecommerce.security.permission;
+package com.example.ecommerce.security.user.permission;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "permissions")
+@Table(name = "permission")
 public class PermissionEntity {
 
     @Id

@@ -1,4 +1,4 @@
-package com.example.ecommerce.security.user.validation;
+package com.example.ecommerce.security.user.validation.password;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

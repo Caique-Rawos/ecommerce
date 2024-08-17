@@ -1,9 +1,13 @@
 package com.example.ecommerce.produto;
 
+import com.example.ecommerce.produto.categoria.CategoriaEntity;
+import com.example.ecommerce.produto.categoria.CategoriaRepository;
+import com.example.ecommerce.produto.categoria.CategoriaService;
 import com.example.ecommerce.produto.dto.ProdutoEntityDto;
 import com.example.ecommerce.produto.dto.ReadProdutoDto;
 import com.example.ecommerce.shared.PaginatedResponse;
 import com.example.ecommerce.shared.exception.MessageException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +21,7 @@ import java.util.Optional;
 public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
+    private final CategoriaService categoriaService;
 
     public PaginatedResponse<ReadProdutoDto> findPaginated(int page, int size, String sortBy, String sortDir) {
         Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortBy);
@@ -33,29 +38,31 @@ public class ProdutoService {
         );
     }
 
+    @Transactional
     public ReadProdutoDto create(ProdutoEntityDto dto) {
-        ProdutoEntity product = new ProdutoEntity(dto);
-        this.verifyCodigoBarraIsRegistered(dto.codigoBarras(), null);
-
-        try {
-            Long id = produtoRepository.save(product).getId();
-            return this.findReadProdutoDtoById(id);
-        }catch (Exception ex){
-            throw new MessageException("MENSAGEM.PRODUTO.ERRO-CADASTRAR-PRODUTO");
-        }
+        ProdutoEntity product = this.createUpdate(dto, null);
+        return this.produtoToReadProdutoDto(produtoRepository.save(product));
     }
 
-    public ReadProdutoDto update(Long id, ProdutoEntityDto dto) {
-        ProdutoEntity existentProduct = this.findById(id);
-
+    public ProdutoEntity createUpdate(ProdutoEntityDto dto, Long id) {
         this.verifyCodigoBarraIsRegistered(dto.codigoBarras(), id);
 
+        CategoriaEntity categoria = categoriaService.getOrCreateCategoria(dto.categoria());
+
         ProdutoEntity product = new ProdutoEntity(dto);
-        product.setId(existentProduct.getId());
+        product.setCategoria(categoria);
 
-        produtoRepository.save(product);
+        return product;
+    }
 
-        return this.findReadProdutoDtoById(existentProduct.getId());
+    @Transactional
+    public ReadProdutoDto update(Long id, ProdutoEntityDto dto) {
+        Long idExistentProduct = this.findById(id).getId();
+
+        ProdutoEntity product = this.createUpdate(dto, id);
+        product.setId(idExistentProduct);
+
+        return this.produtoToReadProdutoDto(produtoRepository.save(product));
     }
 
     public ReadProdutoDto findReadProdutoDtoById(Long id){
@@ -63,7 +70,7 @@ public class ProdutoService {
     }
 
     public ProdutoEntity findById(Long id) {
-        return produtoRepository.findById(id).orElseThrow(() -> new MessageException("MENSAGEM.PRODUTO.PRODUTO-NAO-ENCONTRADO"));
+        return produtoRepository.findById(id).orElseThrow(() -> new MessageException("MENSAGEM.PRODUTO.NAO-ENCONTRADO"));
     }
 
     public ReadProdutoDto produtoToReadProdutoDto(ProdutoEntity produto){

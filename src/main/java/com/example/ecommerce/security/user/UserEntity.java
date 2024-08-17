@@ -1,12 +1,14 @@
 package com.example.ecommerce.security.user;
 
-import com.example.ecommerce.security.permission.PermissionEntity;
+import com.example.ecommerce.cliente.ClienteEntity;
+import com.example.ecommerce.security.user.permission.PermissionEntity;
 import com.example.ecommerce.security.user.dto.UserEntityDto;
 import com.example.ecommerce.security.user.dto.UserValidation;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -17,9 +19,6 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    @Column(nullable = false)
-    private String nome;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -35,6 +34,23 @@ public class UserEntity {
     )
     private Set<PermissionEntity> permissons;
 
+    private LocalDateTime dataCadastro;
+
+    @PrePersist
+    protected void onCreate() {
+        dataCadastro = LocalDateTime.now();
+    }
+
+    private LocalDateTime dataAtualizacao;
+
+    @PreUpdate
+    protected void onUpdate() {
+        dataAtualizacao = LocalDateTime.now();
+    }
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ClienteEntity cliente;
+
     public boolean isLoginCorrect(UserValidation userValidation, PasswordEncoder passwordEncoder){
         return passwordEncoder.matches(userValidation.senha(), this.senha);
     }
@@ -42,16 +58,9 @@ public class UserEntity {
     public UserEntity() {
     }
 
-    public UserEntity(String nome, String email, String senha, Set<PermissionEntity> permissons) {
-        this.nome = nome;
+    public UserEntity( String email, String senha, Set<PermissionEntity> permissons) {
         this.email = email;
         this.senha = senha;
         this.permissons = permissons;
-    }
-
-    public UserEntity(UserEntityDto dto) {
-        this.nome = dto.nome();
-        this.email = dto.email();
-        this.senha = dto.senha();
     }
 }

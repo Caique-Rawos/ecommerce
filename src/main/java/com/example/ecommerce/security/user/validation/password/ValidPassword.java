@@ -1,4 +1,4 @@
-package com.example.ecommerce.security.user.validation;
+package com.example.ecommerce.security.user.validation.password;
 
 import com.nimbusds.jose.Payload;
 import jakarta.validation.Constraint;

@@ -1,7 +1,7 @@
 package com.example.ecommerce.security.config;
 
-import com.example.ecommerce.security.permission.PermissionEntity;
-import com.example.ecommerce.security.permission.PermissonRepository;
+import com.example.ecommerce.security.user.permission.PermissionEntity;
+import com.example.ecommerce.security.user.permission.PermissionRepository;
 import com.example.ecommerce.security.user.UserEntity;
 import com.example.ecommerce.security.user.UserRepository;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -18,44 +18,41 @@ import java.util.Set;
 @Configuration
 public class AdminUserConfig implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(AdminUserConfig.class);
-    private final String nomeAdmin;
     private final String emailAdmin;
     private final String senhaAdmin;
 
-    private final PermissonRepository permissonRepository;
+    private final PermissionRepository permissionRepository;
 
     private final UserRepository userRepository;
 
     private final BCryptPasswordEncoder passwordEncoder;
 
     public AdminUserConfig(
-            PermissonRepository permissonRepository,
+            PermissionRepository permissionRepository,
             UserRepository userRepository,
             BCryptPasswordEncoder passwordEncoder
     ){
-        this.permissonRepository = permissonRepository;
+        this.permissionRepository = permissionRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
 
         Dotenv dotenv = Dotenv.load();
-        this.nomeAdmin = dotenv.get("ADMINISTRADOR_NOME", "admin");
-        this.emailAdmin = dotenv.get("ADMINISTRADOR_EMAIL", "admin@gmail.com");
-        this.senhaAdmin = dotenv.get("ADMINISTRADOR_SENHA", "Admin123!");
+        this.emailAdmin = dotenv.get("ADMIN_EMAIL");
+        this.senhaAdmin = dotenv.get("ADMIN_SENHA");
     }
 
     @Override
     @Transactional
-    public void run(String... args) throws Exception {
-        PermissionEntity adminPermission = permissonRepository.findByDescricao(PermissionEntity.permissions.ADMIN.name());
+    public void run(String... args) {
+        PermissionEntity adminPermission = permissionRepository.findByDescricao(PermissionEntity.permissions.ADMIN.name());
         Optional<UserEntity> adminUser = userRepository.findByEmail(emailAdmin);
 
         adminUser.ifPresentOrElse(
                 user -> {
-                    logger.warn("Usuário {} já existe", nomeAdmin);
+                    logger.warn("Email {} já cadastrado", emailAdmin);
                 },
                 () -> {
                     UserEntity user = new UserEntity(
-                            nomeAdmin,
                             emailAdmin,
                             passwordEncoder.encode(senhaAdmin),
                             Set.of(adminPermission)
