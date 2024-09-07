@@ -26,19 +26,10 @@ public class ClienteController {
     }
 
     @PostMapping()
-    public ReadClienteDto createCliente(
+    public ReadClienteDto createUpdateCliente(
             @RequestBody ClienteEntityDto dto,
             JwtAuthenticationToken token
     ) {
-        return clienteService.create(dto, token);
-    }
-
-    @PatchMapping("/{id}")
-    public ReadClienteDto updateCliente(
-            @PathVariable("id") UUID id,
-            @RequestBody ClienteEntityDto dto,
-            JwtAuthenticationToken token
-    ) {
-        return clienteService.update(id, dto, token);
+        return clienteService.createUpdate(dto, token);
     }
 }

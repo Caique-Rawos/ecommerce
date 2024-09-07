@@ -3,10 +3,8 @@ package com.example.ecommerce.cliente;
 import com.example.ecommerce.cliente.dto.ClienteEntityDto;
 import com.example.ecommerce.cliente.dto.ReadClienteDto;
 import com.example.ecommerce.cliente.endereco.EnderecoEntity;
-import com.example.ecommerce.cliente.endereco.EnderecoService;
 import com.example.ecommerce.cliente.endereco.dto.ReadEnderecoDto;
 import com.example.ecommerce.security.user.UserEntity;
-import com.example.ecommerce.security.user.UserRepository;
 import com.example.ecommerce.security.user.UserService;
 import com.example.ecommerce.shared.exception.MessageException;
 import jakarta.transaction.Transactional;
@@ -24,25 +22,23 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
     private final UserService userService;
-    private final EnderecoService enderecoService;
+
+//    public List<ReadClienteDto> findAll() {
+//        return this.clienteRepository
+//                .findAll()
+//                .stream()
+//                .map(this::clienteToReadClienteDto)
+//                .collect(Collectors.toList());
+//    }
 
     @Transactional
-    public ReadClienteDto create(ClienteEntityDto dto, JwtAuthenticationToken token) {
-        ClienteEntity cliente = this.createUpdate(dto, token);
-        return this.clienteToReadClienteDto(clienteRepository.save(cliente));
-    }
-
-    public List<ReadClienteDto> findAll() {
-        return this.clienteRepository
-                .findAll()
-                .stream()
-                .map(this::clienteToReadClienteDto)
-                .collect(Collectors.toList());
-    }
-
-    public ClienteEntity createUpdate(ClienteEntityDto dto, JwtAuthenticationToken token) {
+    public ReadClienteDto createUpdate(ClienteEntityDto dto, JwtAuthenticationToken token) {
         ClienteEntity cliente = new ClienteEntity(dto);
-        cliente.setUser(userService.getById(UUID.fromString(token.getName())));
+
+        UserEntity usuario = userService.getById(UUID.fromString(token.getName()));
+
+        cliente.setId(this.findByUsuario(usuario));
+        cliente.setUser(usuario);
 
         List<EnderecoEntity> enderecos = dto.enderecos().stream()
                 .map(enderecoDto -> {
@@ -59,18 +55,10 @@ public class ClienteService {
                 .collect(Collectors.toList());
 
         cliente.setEnderecos(enderecos);
-        return cliente;
-    }
-
-    @Transactional
-    public ReadClienteDto update(UUID id, ClienteEntityDto dto, JwtAuthenticationToken token) {
-        UUID idExistentCliente = this.findById(id).getId();
-
-        ClienteEntity cliente = this.createUpdate(dto, token);
-        cliente.setId(idExistentCliente);
-
         return this.clienteToReadClienteDto(clienteRepository.save(cliente));
     }
+
+
 
     public ReadClienteDto getById(UUID id) {
         return this.clienteToReadClienteDto(this.findById(id));
@@ -80,9 +68,13 @@ public class ClienteService {
         return clienteRepository.findById(id).orElseThrow(() -> new MessageException("MENSAGEM.CLIENTE.NAO-ENCONTRADO"));
     }
 
+    public UUID findByUsuario(UserEntity usuario) {
+        return clienteRepository.findByUser(usuario).map(ClienteEntity::getId).orElse(null);
+    }
+
     public ReadClienteDto clienteToReadClienteDto(ClienteEntity cliente){
         List<ReadEnderecoDto> enderecoDtos = cliente.getEnderecos().stream()
-                .map(enderecoService::enderecoToReadEnderecoDto)
+                .map(this::enderecoToReadEnderecoDto)
                 .collect(Collectors.toList());
 
         return  new ReadClienteDto(
@@ -92,6 +84,17 @@ public class ClienteService {
                 cliente.getTelefoneFixo(),
                 cliente.getDataNascimento(),
                 enderecoDtos
+        );
+    }
+
+    public ReadEnderecoDto enderecoToReadEnderecoDto(EnderecoEntity endereco){
+        return  new ReadEnderecoDto(
+                endereco.getRua(),
+                endereco.getNumero(),
+                endereco.getBairro(),
+                endereco.getCep(),
+                endereco.getCidade(),
+                endereco.getEstado()
         );
     }
 }

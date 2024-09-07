@@ -14,18 +14,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(GenericException.class)
     public ResponseEntity<DefaultHttpResponse<String>> handleGenericException(GenericException ex, WebRequest request) {
-        DefaultHttpResponse<String> response = new DefaultHttpResponse<>(ex.getMessage(), null);
+        DefaultHttpResponse<String> response = new DefaultHttpResponse<>(ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     @ExceptionHandler(MessageException.class)
     public ResponseEntity<DefaultHttpResponse<String>> handleMessageException(MessageException ex, WebRequest request) {
-        DefaultHttpResponse<String> response = new DefaultHttpResponse<>(ex.getMessage(), null);
+        DefaultHttpResponse<String> response = new DefaultHttpResponse<>(ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<DefaultHttpResponse<String>> handleGlobalException(Exception ex, WebRequest request) {
-        DefaultHttpResponse<String> response = new DefaultHttpResponse<>(ex.getMessage(), null);
+        DefaultHttpResponse<String> response = new DefaultHttpResponse<>(ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
                 .findFirst()
                 .orElse("MENSAGEM.ERRO-VALIDACAO");
 
-        DefaultHttpResponse<String> response = new DefaultHttpResponse<>(message, null);
+        DefaultHttpResponse<String> response = new DefaultHttpResponse<>(message);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
