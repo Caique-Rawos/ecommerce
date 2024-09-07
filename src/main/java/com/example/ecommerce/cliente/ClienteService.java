@@ -32,10 +32,16 @@ public class ClienteService {
         return this.clienteToReadClienteDto(clienteRepository.save(cliente));
     }
 
+    public List<ReadClienteDto> findAll() {
+        return this.clienteRepository
+                .findAll()
+                .stream()
+                .map(this::clienteToReadClienteDto)
+                .collect(Collectors.toList());
+    }
+
     public ClienteEntity createUpdate(ClienteEntityDto dto, JwtAuthenticationToken token) {
         ClienteEntity cliente = new ClienteEntity(dto);
-        System.out.println(token.getName());
-        System.out.println(UUID.fromString(token.getName()));
         cliente.setUser(userService.getById(UUID.fromString(token.getName())));
 
         List<EnderecoEntity> enderecos = dto.enderecos().stream()
@@ -64,6 +70,10 @@ public class ClienteService {
         cliente.setId(idExistentCliente);
 
         return this.clienteToReadClienteDto(clienteRepository.save(cliente));
+    }
+
+    public ReadClienteDto getById(UUID id) {
+        return this.clienteToReadClienteDto(this.findById(id));
     }
 
     public ClienteEntity findById(UUID id) {

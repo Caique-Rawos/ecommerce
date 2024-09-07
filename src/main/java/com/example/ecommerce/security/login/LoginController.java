@@ -2,6 +2,7 @@ package com.example.ecommerce.security.login;
 
 import com.example.ecommerce.security.login.dto.LoginRequest;
 import com.example.ecommerce.security.login.dto.LoginResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/v1/login")
 @RequiredArgsConstructor
+@Tag(name = "Login")
 public class LoginController {
     private final LoginService loginService;
 

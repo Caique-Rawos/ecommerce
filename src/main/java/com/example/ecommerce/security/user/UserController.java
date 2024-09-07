@@ -1,6 +1,7 @@
 package com.example.ecommerce.security.user;
 
 import com.example.ecommerce.security.user.dto.UserEntityDto;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/v1/user")
 @RequiredArgsConstructor
+@Tag(name = "Usuario")
 public class UserController {
 
     private final UserService userService;

@@ -3,12 +3,14 @@ package com.example.ecommerce.produto;
 import com.example.ecommerce.produto.dto.ProdutoEntityDto;
 import com.example.ecommerce.produto.dto.ReadProdutoDto;
 import com.example.ecommerce.shared.PaginatedResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/produto")
 @RequiredArgsConstructor
+@Tag(name = "Produto")
 public class ProdutoController {
     private final ProdutoService produtoService;
 
