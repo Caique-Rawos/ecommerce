@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,11 @@ public class ClienteService {
 
         UserEntity usuario = userService.getById(UUID.fromString(token.getName()));
 
-        cliente.setId(this.findByUsuario(usuario));
+        ClienteEntity Findedcliente = clienteRepository.findByUser(usuario).orElse(null);
+        if (Findedcliente != null) {
+            cliente.setId(cliente.getId());
+            cliente.setDataCadastro(Findedcliente.getDataCadastro());
+        }
         cliente.setUser(usuario);
 
         List<EnderecoEntity> enderecos = dto.enderecos().stream()
@@ -68,9 +73,6 @@ public class ClienteService {
         return clienteRepository.findById(id).orElseThrow(() -> new MessageException("MENSAGEM.CLIENTE.NAO-ENCONTRADO"));
     }
 
-    public UUID findByUsuario(UserEntity usuario) {
-        return clienteRepository.findByUser(usuario).map(ClienteEntity::getId).orElse(null);
-    }
 
     public ReadClienteDto clienteToReadClienteDto(ClienteEntity cliente){
         List<ReadEnderecoDto> enderecoDtos = cliente.getEnderecos().stream()
