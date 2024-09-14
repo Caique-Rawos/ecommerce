@@ -13,7 +13,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -23,14 +22,6 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
     private final UserService userService;
-
-//    public List<ReadClienteDto> findAll() {
-//        return this.clienteRepository
-//                .findAll()
-//                .stream()
-//                .map(this::clienteToReadClienteDto)
-//                .collect(Collectors.toList());
-//    }
 
     @Transactional
     public ReadClienteDto createUpdate(ClienteEntityDto dto, JwtAuthenticationToken token) {
@@ -64,7 +55,6 @@ public class ClienteService {
     }
 
 
-
     public ReadClienteDto getById(UUID id) {
         return this.clienteToReadClienteDto(this.findById(id));
     }
@@ -74,12 +64,12 @@ public class ClienteService {
     }
 
 
-    public ReadClienteDto clienteToReadClienteDto(ClienteEntity cliente){
+    public ReadClienteDto clienteToReadClienteDto(ClienteEntity cliente) {
         List<ReadEnderecoDto> enderecoDtos = cliente.getEnderecos().stream()
                 .map(this::enderecoToReadEnderecoDto)
                 .collect(Collectors.toList());
 
-        return  new ReadClienteDto(
+        return new ReadClienteDto(
                 cliente.getNome(),
                 cliente.getCpfCnpj(),
                 cliente.getCelular(),
@@ -89,8 +79,8 @@ public class ClienteService {
         );
     }
 
-    public ReadEnderecoDto enderecoToReadEnderecoDto(EnderecoEntity endereco){
-        return  new ReadEnderecoDto(
+    public ReadEnderecoDto enderecoToReadEnderecoDto(EnderecoEntity endereco) {
+        return new ReadEnderecoDto(
                 endereco.getRua(),
                 endereco.getNumero(),
                 endereco.getBairro(),

@@ -1,13 +1,11 @@
 package com.example.ecommerce.venda;
 
 import com.example.ecommerce.cliente.ClienteEntity;
-import com.example.ecommerce.venda.dto.ReadVendaDto;
-import com.example.ecommerce.venda.vendaitem.VendaItemEntity;
-import com.example.ecommerce.venda.vendaitem.dto.VendaItemEntityDto;
+import com.example.ecommerce.venda.venda_item.VendaItemEntity;
+import com.example.ecommerce.venda.venda_parcela.VendaParcelaEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -15,7 +13,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -38,6 +35,9 @@ public class VendaEntity implements Serializable {
 
     @Column(name = "valor_total", nullable = false)
     private BigDecimal valorTotal;
+
+    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VendaParcelaEntity> parcelas;
 
     public VendaEntity() {
         this.valorTotal = BigDecimal.ZERO;

@@ -1,7 +1,5 @@
 package com.example.ecommerce.venda;
 
-import com.example.ecommerce.cliente.dto.ClienteEntityDto;
-import com.example.ecommerce.cliente.dto.ReadClienteDto;
 import com.example.ecommerce.venda.dto.ReadVendaDto;
 import com.example.ecommerce.venda.dto.VendaEntityDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class VendaController {
 
     private final VendaService vendaService;
+
     @PostMapping()
     public ReadVendaDto createUpdateVenda(
             @RequestBody VendaEntityDto dto,

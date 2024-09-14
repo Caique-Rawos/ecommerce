@@ -39,9 +39,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/v1/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/user").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/v1/produto/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/swagger-ui/**").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/produto/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api-docs/**").permitAll()
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
@@ -63,7 +63,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

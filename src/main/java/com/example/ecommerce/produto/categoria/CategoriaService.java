@@ -1,9 +1,7 @@
 package com.example.ecommerce.produto.categoria;
 
-import com.example.ecommerce.produto.ProdutoEntity;
 import com.example.ecommerce.produto.categoria.dto.CategoriaEntityDto;
 import com.example.ecommerce.produto.categoria.dto.ReadCategoriaDto;
-import com.example.ecommerce.produto.dto.ReadProdutoDto;
 import com.example.ecommerce.shared.PaginatedResponse;
 import com.example.ecommerce.shared.exception.MessageException;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +43,7 @@ public class CategoriaService {
         );
     }
 
-    public ReadCategoriaDto categoriaToReadCategoriaDto(CategoriaEntity categoria){
+    public ReadCategoriaDto categoriaToReadCategoriaDto(CategoriaEntity categoria) {
         return new ReadCategoriaDto(
                 categoria.getId(),
                 categoria.getDescricao()

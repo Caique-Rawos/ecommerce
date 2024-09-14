@@ -2,7 +2,6 @@ package com.example.ecommerce.cliente;
 
 import com.example.ecommerce.cliente.dto.ClienteEntityDto;
 import com.example.ecommerce.cliente.endereco.EnderecoEntity;
-import com.example.ecommerce.produto.dto.ProdutoEntityDto;
 import com.example.ecommerce.security.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,22 +41,9 @@ public class ClienteEntity implements Serializable {
     private LocalDate dataNascimento;
 
     private LocalDateTime dataCadastro;
-
-    @PrePersist
-    protected void onCreate() {
-        dataCadastro = LocalDateTime.now();
-    }
-
     private LocalDateTime dataAtualizacao;
-
-    @PreUpdate
-    protected void onUpdate() {
-        dataAtualizacao = LocalDateTime.now();
-    }
-
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EnderecoEntity> enderecos = new ArrayList<>();
-
     @OneToOne
     @JoinColumn(name = "user_id", unique = true)
     private UserEntity user;
@@ -68,5 +54,15 @@ public class ClienteEntity implements Serializable {
         this.celular = dto.celular();
         this.telefoneFixo = dto.telefoneFixo();
         this.dataNascimento = dto.dataNascimento();
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        dataCadastro = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        dataAtualizacao = LocalDateTime.now();
     }
 }

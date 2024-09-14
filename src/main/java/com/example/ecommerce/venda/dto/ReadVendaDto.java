@@ -1,6 +1,7 @@
 package com.example.ecommerce.venda.dto;
 
-import com.example.ecommerce.venda.vendaitem.dto.ReadVendaItemDto;
+import com.example.ecommerce.venda.venda_item.dto.ReadVendaItemDto;
+import com.example.ecommerce.venda.venda_parcela.dto.ReadVendaParcelaDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -12,5 +13,7 @@ public record ReadVendaDto(
         UUID clienteId,
         BigDecimal valorTotal,
         LocalDateTime dataVenda,
-        List<ReadVendaItemDto> itens
-) {}
+        List<ReadVendaItemDto> itens,
+        List<ReadVendaParcelaDto> parcelas
+) {
+}

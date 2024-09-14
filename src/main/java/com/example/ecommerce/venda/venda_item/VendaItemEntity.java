@@ -1,4 +1,4 @@
-package com.example.ecommerce.venda.vendaitem;
+package com.example.ecommerce.venda.venda_item;
 
 import com.example.ecommerce.produto.ProdutoEntity;
 import com.example.ecommerce.venda.VendaEntity;

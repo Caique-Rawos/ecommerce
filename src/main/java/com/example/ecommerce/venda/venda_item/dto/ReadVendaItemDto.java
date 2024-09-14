@@ -1,4 +1,4 @@
-package com.example.ecommerce.venda.vendaitem.dto;
+package com.example.ecommerce.venda.venda_item.dto;
 
 import java.math.BigDecimal;
 

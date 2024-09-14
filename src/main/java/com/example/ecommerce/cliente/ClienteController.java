@@ -2,7 +2,6 @@ package com.example.ecommerce.cliente;
 
 import com.example.ecommerce.cliente.dto.ClienteEntityDto;
 import com.example.ecommerce.cliente.dto.ReadClienteDto;
-import com.example.ecommerce.produto.dto.ReadProdutoDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -19,17 +18,12 @@ public class ClienteController {
     private final ClienteService clienteService;
 
     @GetMapping("/{id}")
-    public ReadClienteDto getById(
-            @PathVariable("id") UUID id
-    ) {
+    public ReadClienteDto getById(@PathVariable("id") UUID id) {
         return clienteService.getById(id);
     }
 
     @PostMapping()
-    public ReadClienteDto createUpdateCliente(
-            @RequestBody ClienteEntityDto dto,
-            JwtAuthenticationToken token
-    ) {
+    public ReadClienteDto createUpdateCliente(@RequestBody ClienteEntityDto dto, JwtAuthenticationToken token) {
         return clienteService.createUpdate(dto, token);
     }
 }

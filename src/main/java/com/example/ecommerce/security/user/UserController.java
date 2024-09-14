@@ -21,7 +21,7 @@ public class UserController {
 
     @PostMapping()
     public ResponseEntity<Void> createBasicUser(@RequestBody @Valid UserEntityDto dto) {
-         userService.createBasic(dto);
+        userService.createBasic(dto);
         return ResponseEntity.ok().build();
     }
 

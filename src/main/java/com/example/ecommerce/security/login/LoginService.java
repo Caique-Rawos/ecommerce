@@ -3,9 +3,9 @@ package com.example.ecommerce.security.login;
 import com.example.ecommerce.security.config.JwtConfig;
 import com.example.ecommerce.security.login.dto.LoginRequest;
 import com.example.ecommerce.security.login.dto.LoginResponse;
-import com.example.ecommerce.security.user.permission.PermissionEntity;
 import com.example.ecommerce.security.user.UserEntity;
 import com.example.ecommerce.security.user.UserRepository;
+import com.example.ecommerce.security.user.permission.PermissionEntity;
 import com.example.ecommerce.shared.exception.MessageException;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class LoginService {
 
     public ResponseEntity<LoginResponse> login(LoginRequest loginRequest) {
         Optional<UserEntity> user = userRepository.findByEmail(loginRequest.email());
-        if(user.isEmpty() || !user.get().isLoginCorrect(loginRequest.toUserValidation(), passwordEncoder)){
+        if (user.isEmpty() || !user.get().isLoginCorrect(loginRequest.toUserValidation(), passwordEncoder)) {
             throw new MessageException("MENSAGEM.LOGIN.USUARIO-SENHA-INVALIDO");
         }
 

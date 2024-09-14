@@ -1,7 +1,6 @@
 package com.example.ecommerce.produto;
 
 import com.example.ecommerce.produto.categoria.CategoriaEntity;
-import com.example.ecommerce.produto.categoria.CategoriaRepository;
 import com.example.ecommerce.produto.categoria.CategoriaService;
 import com.example.ecommerce.produto.dto.ProdutoEntityDto;
 import com.example.ecommerce.produto.dto.ReadProdutoDto;
@@ -14,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import java.util.Optional;
 
 @Service
@@ -65,7 +65,7 @@ public class ProdutoService {
         return this.produtoToReadProdutoDto(produtoRepository.save(product));
     }
 
-    public ReadProdutoDto findReadProdutoDtoById(Long id){
+    public ReadProdutoDto findReadProdutoDtoById(Long id) {
         return this.produtoToReadProdutoDto(this.findById(id));
     }
 
@@ -73,8 +73,8 @@ public class ProdutoService {
         return produtoRepository.findById(id).orElseThrow(() -> new MessageException("MENSAGEM.PRODUTO.NAO-ENCONTRADO"));
     }
 
-    public ReadProdutoDto produtoToReadProdutoDto(ProdutoEntity produto){
-        return  new ReadProdutoDto(
+    public ReadProdutoDto produtoToReadProdutoDto(ProdutoEntity produto) {
+        return new ReadProdutoDto(
                 produto.getDescricao(),
                 produto.getCodigoBarras(),
                 produto.getPrecoVenda()

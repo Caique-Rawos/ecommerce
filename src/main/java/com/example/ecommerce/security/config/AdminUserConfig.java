@@ -1,9 +1,9 @@
 package com.example.ecommerce.security.config;
 
-import com.example.ecommerce.security.user.permission.PermissionEntity;
-import com.example.ecommerce.security.user.permission.PermissionRepository;
 import com.example.ecommerce.security.user.UserEntity;
 import com.example.ecommerce.security.user.UserRepository;
+import com.example.ecommerce.security.user.permission.PermissionEntity;
+import com.example.ecommerce.security.user.permission.PermissionRepository;
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -20,18 +20,15 @@ public class AdminUserConfig implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(AdminUserConfig.class);
     private final String emailAdmin;
     private final String senhaAdmin;
-
     private final PermissionRepository permissionRepository;
-
     private final UserRepository userRepository;
-
     private final BCryptPasswordEncoder passwordEncoder;
 
     public AdminUserConfig(
             PermissionRepository permissionRepository,
             UserRepository userRepository,
             BCryptPasswordEncoder passwordEncoder
-    ){
+    ) {
         this.permissionRepository = permissionRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;

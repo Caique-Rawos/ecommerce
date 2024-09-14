@@ -20,7 +20,7 @@ public class PermissionEntity {
 
         long idPermission;
 
-        permissions( long idPermission){
+        permissions(long idPermission) {
             this.idPermission = idPermission;
         }
 

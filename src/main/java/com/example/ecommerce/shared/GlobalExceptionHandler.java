@@ -17,6 +17,7 @@ public class GlobalExceptionHandler {
         DefaultHttpResponse<String> response = new DefaultHttpResponse<>(ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
     @ExceptionHandler(MessageException.class)
     public ResponseEntity<DefaultHttpResponse<String>> handleMessageException(MessageException ex, WebRequest request) {
         DefaultHttpResponse<String> response = new DefaultHttpResponse<>(ex.getMessage());

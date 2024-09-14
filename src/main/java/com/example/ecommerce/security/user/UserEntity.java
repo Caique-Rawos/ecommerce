@@ -1,9 +1,8 @@
 package com.example.ecommerce.security.user;
 
 import com.example.ecommerce.cliente.ClienteEntity;
-import com.example.ecommerce.security.user.permission.PermissionEntity;
-import com.example.ecommerce.security.user.dto.UserEntityDto;
 import com.example.ecommerce.security.user.dto.UserValidation;
+import com.example.ecommerce.security.user.permission.PermissionEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,32 +34,30 @@ public class UserEntity {
     private Set<PermissionEntity> permissons;
 
     private LocalDateTime dataCadastro;
+    private LocalDateTime dataAtualizacao;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ClienteEntity cliente;
+
+    public UserEntity() {
+    }
+
+    public UserEntity(String email, String senha, Set<PermissionEntity> permissons) {
+        this.email = email;
+        this.senha = senha;
+        this.permissons = permissons;
+    }
 
     @PrePersist
     protected void onCreate() {
         dataCadastro = LocalDateTime.now();
     }
 
-    private LocalDateTime dataAtualizacao;
-
     @PreUpdate
     protected void onUpdate() {
         dataAtualizacao = LocalDateTime.now();
     }
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private ClienteEntity cliente;
-
-    public boolean isLoginCorrect(UserValidation userValidation, PasswordEncoder passwordEncoder){
+    public boolean isLoginCorrect(UserValidation userValidation, PasswordEncoder passwordEncoder) {
         return passwordEncoder.matches(userValidation.senha(), this.senha);
-    }
-
-    public UserEntity() {
-    }
-
-    public UserEntity( String email, String senha, Set<PermissionEntity> permissons) {
-        this.email = email;
-        this.senha = senha;
-        this.permissons = permissons;
     }
 }

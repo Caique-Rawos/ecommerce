@@ -1,8 +1,8 @@
 package com.example.ecommerce.security.user;
 
+import com.example.ecommerce.security.user.dto.UserEntityDto;
 import com.example.ecommerce.security.user.permission.PermissionEntity;
 import com.example.ecommerce.security.user.permission.PermissionRepository;
-import com.example.ecommerce.security.user.dto.UserEntityDto;
 import com.example.ecommerce.shared.exception.MessageException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.validator.routines.EmailValidator;
