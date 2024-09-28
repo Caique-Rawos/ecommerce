@@ -1,5 +1,9 @@
 package com.example.ecommerce.produto;
 
+import com.example.ecommerce.produto.categoria.CategoriaEntity;
+import com.example.ecommerce.produto.categoria.CategoriaService;
+import com.example.ecommerce.produto.categoria.dto.CategoriaEntityDto;
+import com.example.ecommerce.produto.dto.ProdutoEntityDto;
 import com.example.ecommerce.produto.dto.ReadProdutoDto;
 import com.example.ecommerce.shared.PaginatedResponse;
 import com.example.ecommerce.shared.exception.MessageException;
@@ -10,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.*;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -23,11 +28,15 @@ public class ProdutoServiceTest {
     @Mock
     private ProdutoRepository produtoRepository;
 
+    @Mock
+    private CategoriaService categoriaService;
+
     @InjectMocks
     private ProdutoService produtoService;
 
-
     private ProdutoEntity produtoEntity;
+    private ProdutoEntityDto produtoEntityDto;
+    private CategoriaEntity categoriaEntity;
 
     @BeforeEach
     public void setUp() {
@@ -36,6 +45,70 @@ public class ProdutoServiceTest {
         produtoEntity = new ProdutoEntity();
         produtoEntity.setId(1L);
         produtoEntity.setCodigoBarras("123456789");
+
+        produtoEntityDto = new ProdutoEntityDto(
+                null,
+                "123456789",
+                BigDecimal.valueOf(99.99),
+                BigDecimal.valueOf(10),
+                "desc",
+                "desc",
+                "UN",
+                new CategoriaEntityDto(null, "CategoriaTeste")
+        );
+
+        categoriaEntity = new CategoriaEntity();
+        categoriaEntity.setId(1L);
+        categoriaEntity.setDescricao("CategoriaTeste");
+    }
+
+    @Test
+    public void testCreate_WhenCodigoBarraIsNotRegistered_ReturnsDto() {
+        when(produtoRepository.findByCodigoBarras(produtoEntityDto.codigoBarras())).thenReturn(Optional.empty());
+        when(categoriaService.getOrCreateCategoria(produtoEntityDto.categoria())).thenReturn(categoriaEntity);
+        when(produtoRepository.save(any(ProdutoEntity.class))).thenReturn(produtoEntity);
+
+        ReadProdutoDto result = produtoService.create(produtoEntityDto);
+
+        assertNotNull(result);
+        assertEquals(produtoEntity.getCodigoBarras(), result.codigoBarras());
+        verify(produtoRepository, times(1)).save(any(ProdutoEntity.class));
+    }
+
+    @Test
+    public void testCreate_WhenCodigoBarraIsAlreadyRegistered_ThrowsException() {
+        when(produtoRepository.findByCodigoBarras(produtoEntityDto.codigoBarras())).thenReturn(Optional.of(produtoEntity));
+
+        MessageException thrown = assertThrows(MessageException.class, () -> {
+            produtoService.create(produtoEntityDto);
+        });
+
+        assertEquals("MENSAGEM.PRODUTO.CODIGO-BARRA-JA-CADASTRADO", thrown.getMessage());
+    }
+
+    @Test
+    public void testUpdate_WhenProdutoExists_ReturnsUpdatedDto() {
+        when(produtoRepository.findById(1L)).thenReturn(Optional.of(produtoEntity));
+        when(produtoRepository.findByCodigoBarrasAndIdNot(produtoEntityDto.codigoBarras(), 1L)).thenReturn(Optional.empty());
+        when(categoriaService.getOrCreateCategoria(produtoEntityDto.categoria())).thenReturn(categoriaEntity);
+        when(produtoRepository.save(any(ProdutoEntity.class))).thenReturn(produtoEntity);
+
+        ReadProdutoDto result = produtoService.update(1L, produtoEntityDto);
+
+        assertNotNull(result);
+        assertEquals(produtoEntity.getCodigoBarras(), result.codigoBarras());
+        verify(produtoRepository, times(1)).save(any(ProdutoEntity.class));
+    }
+
+    @Test
+    public void testUpdate_WhenProdutoDoesNotExist_ThrowsException() {
+        when(produtoRepository.findById(1L)).thenReturn(Optional.empty());
+
+        MessageException thrown = assertThrows(MessageException.class, () -> {
+            produtoService.update(1L, produtoEntityDto);
+        });
+
+        assertEquals("MENSAGEM.PRODUTO.NAO-ENCONTRADO", thrown.getMessage());
     }
 
     @Test
@@ -64,7 +137,7 @@ public class ProdutoServiceTest {
     }
 
     @Test
-    public void testVerifyCodigoBarraIsRegistered_WhenCodigoBarraIsRegisteredWithDifferentId_ThrowsException() {
+    public void testVerifyCodigoBarraIsRegisteredWhenCodigoBarraIsRegisteredWithDifferentIdThrowsException() {
         String codigoBarra = "123456789";
         Long id = 1L;
         ProdutoEntity existingProduto = new ProdutoEntity();
@@ -80,7 +153,7 @@ public class ProdutoServiceTest {
     }
 
     @Test
-    public void testVerifyCodigoBarraIsRegistered_WhenCodigoBarraIsNotRegistered_DoesNotThrowException() {
+    public void testVerifyCodigoBarraIsRegisteredWhenCodigoBarraIsNotRegisteredDoesNotThrowException() {
         String codigoBarra = "123456789";
         Long id = 1L;
 
@@ -90,17 +163,16 @@ public class ProdutoServiceTest {
     }
 
     @Test
-    public void testVerifyCodigoBarraIsRegistered_WhenCodigoBarraIsNotRegisteredWithNullId_DoesNotThrowException() {
+    public void testVerifyCodigoBarraIsRegisteredWhenCodigoBarraIsNotRegisteredWithNullIdDoesNotThrowException() {
         String codigoBarra = "123456789";
 
         when(produtoRepository.findByCodigoBarras(codigoBarra)).thenReturn(Optional.empty());
 
-        // Execute method without exception
         produtoService.verifyCodigoBarraIsRegistered(codigoBarra, null);
     }
 
     @Test
-    public void testVerifyCodigoBarraIsRegistered_WhenCodigoBarraIsRegisteredWithNullId_ThrowsException() {
+    public void testVerifyCodigoBarraIsRegisteredWhenCodigoBarraIsRegisteredWithNullIdThrowsException() {
         String codigoBarra = "123456789";
         ProdutoEntity existingProduto = new ProdutoEntity();
         existingProduto.setCodigoBarras(codigoBarra);
@@ -115,7 +187,7 @@ public class ProdutoServiceTest {
     }
 
     @Test
-    public void testFindReadProdutoDtoById_WhenProdutoExists_ReturnsDto() {
+    public void testFindReadProdutoDtoByIdWhenProdutoExistsReturnsDto() {
         when(produtoRepository.findById(1L)).thenReturn(Optional.of(produtoEntity));
 
         ReadProdutoDto result = produtoService.findReadProdutoDtoById(1L);
@@ -125,7 +197,7 @@ public class ProdutoServiceTest {
     }
 
     @Test
-    public void testFindReadProdutoDtoById_WhenProdutoDoesNotExist_ThrowsException() {
+    public void testFindReadProdutoDtoByIdWhenProdutoDoesNotExistThrowsException() {
         when(produtoRepository.findById(1L)).thenReturn(Optional.empty());
 
         MessageException thrown = assertThrows(MessageException.class, () -> {
