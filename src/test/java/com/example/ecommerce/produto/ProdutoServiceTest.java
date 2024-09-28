@@ -63,7 +63,7 @@ public class ProdutoServiceTest {
     }
 
     @Test
-    public void testCreate_WhenCodigoBarraIsNotRegistered_ReturnsDto() {
+    public void testCreateWhenCodigoBarraIsNotRegisteredReturnsDto() {
         when(produtoRepository.findByCodigoBarras(produtoEntityDto.codigoBarras())).thenReturn(Optional.empty());
         when(categoriaService.getOrCreateCategoria(produtoEntityDto.categoria())).thenReturn(categoriaEntity);
         when(produtoRepository.save(any(ProdutoEntity.class))).thenReturn(produtoEntity);
@@ -76,7 +76,7 @@ public class ProdutoServiceTest {
     }
 
     @Test
-    public void testCreate_WhenCodigoBarraIsAlreadyRegistered_ThrowsException() {
+    public void testCreateWhenCodigoBarraIsAlreadyRegisteredThrowsException() {
         when(produtoRepository.findByCodigoBarras(produtoEntityDto.codigoBarras())).thenReturn(Optional.of(produtoEntity));
 
         MessageException thrown = assertThrows(MessageException.class, () -> {
@@ -87,7 +87,7 @@ public class ProdutoServiceTest {
     }
 
     @Test
-    public void testUpdate_WhenProdutoExists_ReturnsUpdatedDto() {
+    public void testUpdateWhenProdutoExistsReturnsUpdatedDto() {
         when(produtoRepository.findById(1L)).thenReturn(Optional.of(produtoEntity));
         when(produtoRepository.findByCodigoBarrasAndIdNot(produtoEntityDto.codigoBarras(), 1L)).thenReturn(Optional.empty());
         when(categoriaService.getOrCreateCategoria(produtoEntityDto.categoria())).thenReturn(categoriaEntity);
@@ -101,7 +101,7 @@ public class ProdutoServiceTest {
     }
 
     @Test
-    public void testUpdate_WhenProdutoDoesNotExist_ThrowsException() {
+    public void testUpdateWhenProdutoDoesNotExistThrowsException() {
         when(produtoRepository.findById(1L)).thenReturn(Optional.empty());
 
         MessageException thrown = assertThrows(MessageException.class, () -> {
